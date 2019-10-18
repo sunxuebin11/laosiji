@@ -1,0 +1,45 @@
+variables:
+    DEPLOY_DIR_ROOT: '/home/site/api/public/'
+stages:
+    - build
+    - deploy
+    - deploy_testing
+before_script:
+    - export PATH="/usr/local/bin:$PATH"
+cache:
+  key: ${CI_BUILD_REF_NAME}
+  paths:
+    - node_modules/
+    - dist/
+
+build:
+    stage: build
+    tags: [tange-web-admin-html]
+    script:
+        - cd ${CI_PROJECT_DIR}
+        - cnpm install
+        - cnpm run build
+    environment:
+        name: testing
+
+deploy:
+    stage: deploy
+    tags: [tange-web-admin-html]
+    script:
+        - rsync -avz ${CI_PROJECT_DIR}/dist/* root@10.10.10.113:$DEPLOY_DIR_ROOT
+        - ssh -T 10.10.10.113 'chown -R nginx:nginx /home/site/api/public/'
+    environment:
+        name: product
+    only:
+        - master
+
+deploy_testing:
+    stage: deploy_testing
+    tags: [tange-web-admin-html]
+    script:
+        - rsync -avz ${CI_PROJECT_DIR}/dist/* root@10.10.10.113:$DEPLOY_DIR_ROOT
+        - ssh -T 10.10.10.113 'chown -R nginx:nginx /home/site/api/public/'
+    environment:
+        name: testing
+    only:
+        - testing

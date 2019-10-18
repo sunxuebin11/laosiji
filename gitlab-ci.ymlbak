@@ -1,0 +1,13 @@
+variables:
+    DEPLOY_DIR_ROOT: '/home/site/api/public/web-html'
+stages:
+    - deploy
+deploy:
+    stage: deploy
+    tags: [roc-testing]
+    script:
+        - ssh -T root@10.10.10.113 'cd /home/site/api/public/web-html && git pull'
+    environment:
+        name: testing
+    only:
+        - master

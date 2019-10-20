@@ -18,7 +18,7 @@ var router = new Router({
     {
       path: '/home',
       component: Home,
-      redirect: '/users',
+      redirect: '/roles',
       children: [
         { path: '/users', component: User },
         { path: '/rights', component: Browse },

@@ -40,7 +40,8 @@
               :src="scope.row.content"
               alt
               id="shi-p"
-              @click="Tanku(scope.$index,scope.row)">
+              @click="Tanku(scope.$index,scope.row)"
+              >
           </template>
         </el-table-column>
         <el-table-column prop="content1" label="里程数图片" width="270">
@@ -72,15 +73,15 @@
         @close="guanbi"
       >
       <div id="tan-tu">
-            <img :src="this.selectTable.content" alt>
+            <el-image :src="this.selectTable.content" :preview-src-list="srcList"></el-image>
       </div>
       <div id="tan-tu">
-            <img :src="this.selectTable.content1" alt >
+            <el-image :src="this.selectTable.content1" :preview-src-list="srcList1" ></el-image>
       </div>
         <div id="xin-x" :model="selectTable">
-          <p>作者：{{selectTable.name}}</p>
-          <p>作品名称：{{selectTable.id}}</p>
-          <p>类别：{{selectTable.type_name}}</p>
+          <p>里程数：{{selectTable.name}}</p>
+          <!-- <p>作品名称：{{selectTable.id}}</p>
+          <p>类别：{{selectTable.type_name}}</p> -->
         </div>
         <template :model="selectTable">
           <div id="t-j" v-show="selectTable.status==0?true:false">
@@ -134,6 +135,8 @@ export default {
     // 作品弹框
     Tanku(index, row, Id) {
       this.selectTable = row
+      this.srcList[0] = row.content
+      this.srcList1[0] = row.content1
       this.u = this.selectTable.content.length
       console.log(this.u)
       this.distributeDialogVisible = true
@@ -142,39 +145,39 @@ export default {
       this.idi = Id
     },
     // 修改票数
-    xiugai(index, row, Id) {
-      this.$prompt('输入票数', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      })
-        .then(async value => {
-          this.selectTable = row
-          this.selectTable.vote_num = value
-          var reqData = {
-            id: Id,
-            vote_num: value
-          }
-          var data = Qs.stringify(reqData)
-          const { data: res } = await this.$http.post(
-            '/admin/works/voteEdit',
-            data,
-            {
-              'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-            }
-          )
-          console.log(res)
-          this.$message({
-            type: 'success',
-            message: '已修改'
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '取消修改'
-          })
-        })
-    },
+    // xiugai(index, row, Id) {
+    //   this.$prompt('输入票数', '提示', {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消'
+    //   })
+    //     .then(async value => {
+    //       this.selectTable = row
+    //       this.selectTable.vote_num = value
+    //       var reqData = {
+    //         id: Id,
+    //         vote_num: value
+    //       }
+    //       var data = Qs.stringify(reqData)
+    //       const { data: res } = await this.$http.post(
+    //         '/admin/works/voteEdit',
+    //         data,
+    //         {
+    //           'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+    //         }
+    //       )
+    //       console.log(res)
+    //       this.$message({
+    //         type: 'success',
+    //         message: '已修改'
+    //       })
+    //     })
+    //     .catch(() => {
+    //       this.$message({
+    //         type: 'info',
+    //         message: '取消修改'
+    //       })
+    //     })
+    // },
     // 通过/拒绝
     async Tg(index, row, Id) {
       console.log(row.status)
@@ -283,6 +286,10 @@ export default {
       selectTable: {},
       /** 分配权限相关1 */
       distributeDialogVisible: false, // 对话框展示开关
+      srcList: [
+        ],
+        srcList1: [
+        ],
       // 接收角色列表数据
       roleInfos: [
         {

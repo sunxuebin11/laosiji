@@ -146,6 +146,7 @@ export default {
   color: #fff;
   border: #ccc;
 }
+
 </style>
 <style>
 </style>
